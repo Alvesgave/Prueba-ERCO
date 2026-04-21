@@ -1,23 +1,26 @@
 from config import get_client
 
 def read_sql(ruta_archivo):
+    """Lee el archivo SQL y lo separa por sentencia"""
     with open(ruta_archivo, 'r', encoding='utf-8') as archivo_sql:
         sql = archivo_sql.read()
 
     sentencias = sql.split(';')
-
     return sentencias
 
 def _execute_query(db_client, query):
+    """Ejecuta una consulta SQL y realiza el commit en base de datos"""
     cursor = db_client.get_cursor()
     cursor.execute(query)
     db_client.conn.commit()
 
 def execute_queries(db_client, queries):
+    """Ejecuta todas las consultas de un archivo SQL."""
     for query in queries:
         _execute_query(db_client, query)
 
 def fill_data(tabla, ruta_csv, db_client):
+    """Carga una tabla CSV a una tabla usando COPY"""
     with open(ruta_csv, 'r', encoding='utf-8') as f:
         cursor = db_client.get_cursor()
         cursor.copy_expert(
@@ -27,13 +30,11 @@ def fill_data(tabla, ruta_csv, db_client):
         db_client.conn.commit()
 
 def main():
-
-    """Creación de las tablas dentro de la base de datos"""
+    """Creación de las tablas y carga inicial de datos."""
     db_client = get_client()
     queries = read_sql('Database/create_database.sql')
     execute_queries(db_client, queries)
 
-    """Llenar las tablas dentro de la base de datos"""
     fill_data('tariffs', 'Data/tariffs 4.csv', db_client)
     fill_data('services', 'Data/services 4.csv', db_client)
     fill_data('xm_data_hourly_per_agent', 'Data/xm_data_hourly_per_agent 4.csv', db_client)
@@ -42,7 +43,5 @@ def main():
     fill_data('consumption', 'Data/consumption 4.csv', db_client)
 
 
-
 if __name__ == "__main__":
     main()
-

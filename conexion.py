@@ -3,53 +3,45 @@ import psycopg2
 
 class PostgresClient:
     """Cliente para manejar conexiones a una base de datos PostgreSQL."""
-    def _init_(self):
+    def __init__(self, credentials):
         """Inicializa el cliente con las credenciales de conexión."""
-        self.host = None
-        self.port = None
-        self.dbname = None
-        self.user = None
-        self.password = None
+        self.host = credentials['host']
+        self.port = credentials['port']
+        self.dbname = credentials['database']
+        self.user = credentials['username']
+        self.password = credentials['password']
         self.conn = None
 
-    def connect(self, credentials):
+    def connect(self):
         """Establece la conexión y la guarda en self.conn"""
-        try:
-            self.host = credentials['host']
-            self.port = credentials['port']
-            self.dbname = credentials['database']
-            self.user = credentials['username']
-            self.password = credentials['password']
-
-            self.conn = psycopg2.connect(
-                host=self.host,
-                port=self.port,
-                dbname=self.dbname,
-                user=self.user,
-                password=self.password
-            )
-            return self.conn
-        except Exception as err:
-            raise
+        self.conn = psycopg2.connect(
+            host=self.host,
+            port=self.port,
+            dbname=self.dbname,
+            user=self.user,
+            password=self.password
+        )
+        return self.conn
 
     def get_cursor(self):
         """Devuelve un cursor para ejecutar queries"""
-        try:
-            if self.conn is None:
-                self.connect()
-            return self.conn.cursor()
-        except Exception as err:
-            raise
+        if self.conn is None or self.conn.closed:
+            self.connect()
+        return self.conn.cursor()
+
 
     def close(self):
         """Cierra la conexión"""
-        try:
-            if self.conn:
-                self.conn.close()
-                self.conn = None
-        except Exception as err:
-            raise
+        if self.conn:
+            self.conn.close()
+            self.conn = None
 
-    def _exit_(self, exc_type, exc_val, exc_tb):
+    def __enter__(self):
+        """Conecta solo si no hay una conexión activa."""
+        if self.conn is None or self.conn.closed:
+            self.connect()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
         """Cierra la conexión al salir del contexto."""
         self.close()
