@@ -2,7 +2,7 @@
 Módulo para manejar las cofiguraciones del aplicativo
 """
 
-from conexion import PostgresClient
+from app.db.connection import PostgresClient
 
 def get_credentials():
     """Devuelve las credenciales de PostgreSQL para conectarse"""
@@ -10,7 +10,7 @@ def get_credentials():
              'port': 5432,
              'database': 'erco',
              'username': 'postgres',
-             'password': '950530Alejo*'}
+             'password': ''}
     return creds
 
 def get_client():

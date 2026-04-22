@@ -1,4 +1,5 @@
-from config import get_client
+"""Script de inicialización: crea el esquema y carga los CSV en PostgreSQL."""
+from app.core.config import get_client
 
 def read_sql(ruta_archivo):
     """Lee el archivo SQL y lo separa por sentencia"""
@@ -35,6 +36,7 @@ def main():
     queries = read_sql('Database/create_database.sql')
     execute_queries(db_client, queries)
 
+    # Orden de carga importa: las tablas con FK deben poblarse después de sus referencias.
     fill_data('tariffs', 'Data/tariffs 4.csv', db_client)
     fill_data('services', 'Data/services 4.csv', db_client)
     fill_data('xm_data_hourly_per_agent', 'Data/xm_data_hourly_per_agent 4.csv', db_client)

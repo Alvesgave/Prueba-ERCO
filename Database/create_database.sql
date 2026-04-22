@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS tariffs (
     C                   NUMERIC(20,10),
     P                   NUMERIC(20,10),
     CU                  NUMERIC(20,10),
-    UNIQUE (id_market, voltage_level, cdi)
+    UNIQUE NULLS NOT DISTINCT (id_market, voltage_level, cdi)
 );
 
 CREATE TABLE IF NOT EXISTS services (
