@@ -6,9 +6,9 @@ API RESTful en FastAPI para el cálculo de facturación de energía.
 1. Intalar PostgreSQL local
 2. Instalar `uv` en el entorno de Python: https://docs.astral.sh/uv/getting-started/installation/
 3. Crear la base de datos dentro de PostgreSQL:
-    ```
-    CREATE DATABASE erco;
-    ```
+```
+CREATE DATABASE erco;
+```
 4. Ajustar credenciales en [app/core/config.py](app/core/config.py).
 
 ## Instalación
