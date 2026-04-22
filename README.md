@@ -60,7 +60,7 @@ Data/, Database/          # Datos CSV y DDL
 | GET    | `/excedentes_tuno/`                      | Un solo concepto (`ee1`)                                  |
 | GET    | `/excedentes_tdos/`                      | Un solo concepto (`ee2`)                                  |
 
-Los GET de factura aceptan `?anio=` y `?mes=` (por defecto 2023 y 9). `/system-load` requiere `anio` y `mes`; `id_servicio` es opcional (sin él agrega toda la red).
+Los GET de factura aceptan `?anio=` y `?mes=` (por defecto 2023 y 9). `/system-load/` requiere `anio` y `mes`.
 
 ### Ejemplos
 ```
@@ -86,4 +86,6 @@ Durante el desarrollo y fase de pruebas, las credenciales se dejaron directament
 2. Las consultas SQL construidas con format() o f-strings representan un riesgo de SQL Injection, ya que un usuario malicioso podría manipular los parámetros para alterar o destruir datos. Como mejora, se deben reemplazar por consultas parametrizadas usando el mecanismo nativo de psycopg2 con %s, que sanitiza automáticamente los valores antes de enviarlos a la base de datos
 
 3. Varias funciones comparten la misma estructura base (conexión a la BD, construcción del JOIN y filtros). Se recomienda extraer esta lógica común en una función privada reutilizable, de modo que cada función pública solo defina los parámetros que la diferencian. Esto reduce la duplicación de código y centraliza cualquier cambio futuro en un único lugar.
+
+4. Actualmente las funciones de carga asumen una inserción inicial única. En un entorno real, los datos de consumo, inyección y precios XM se actualizan periódicamente (diaria o mensualmente). Se recomienda implementar funciones de actualización incremental que permitan añadir nuevos registros sin recargar toda la tabla, evitando duplicados.
 
