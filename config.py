@@ -1,4 +1,7 @@
-"""Módulo para manejar las cofiguraciones del aplicativo"""
+"""
+Módulo para manejar las cofiguraciones del aplicativo
+"""
+
 from conexion import PostgresClient
 
 def get_credentials():
@@ -14,5 +17,4 @@ def get_client():
     """Devuelve el cliente de PostgreSQL a partir de la clase PostgresClient"""
     credentials = get_credentials()
     db_client = PostgresClient(credentials)
-    # db_client.connect()
     return db_client
