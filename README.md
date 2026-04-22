@@ -34,9 +34,9 @@ app/
 ├── core/
 │   └── config.py         # Credenciales y fábrica del cliente DB
 ├── db/
-│   └── session.py        # PostgresClient (psycopg2)
+│   └── connection.py     # PostgresClient (psycopg2)
 ├── schemas/
-│   └── invoice.py        # Modelos Pydantic
+│   └── post.py           # Modelos Pydantic
 ├── services/
 │   ├── invoice.py        # Cálculos EA / EC / EE1 / EE2
 │   └── statistics.py     # Estadísticas y carga del sistema

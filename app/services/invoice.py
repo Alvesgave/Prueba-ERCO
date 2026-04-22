@@ -134,35 +134,3 @@ def excedentes_tdos(id_service, anio=2023, mes=9):
     value = cursor.fetchone()
     ee2 = float(value[4])
     return {"EE2": ee2}
-
-def excedentes_tuno(id_service, anio=2023, mes=9):
-    """
-    Calcula EE1: crédito por excedentes tipo 1.
-    Si la inyección mensual > consumo mensual, se acredita el consumo x CU x -1;
-    en caso contrario, se acredita la inyección x CU x -1.
-    """
-    db_client = get_client()
-    cursor = db_client.get_cursor()
-    query_EE1 = f"""
-        SELECT  CASE WHEN SUM(t2.value) > SUM(t3.value) 
-                    THEN SUM(t3.value * t5.cu * -1) 
-                    ELSE SUM(t2.value * t5.cu * -1)
-                END
-        FROM records t1
-        LEFT JOIN injection t2 ON t1.id_record = t2.id_record
-        LEFT JOIN consumption t3 ON t1.id_record = t3.id_record
-        LEFT JOIN services t4 ON t1.id_service = t4.id_service
-        LEFT JOIN tariffs t5
-            ON t4.id_market = t5.id_market 
-            AND t4.voltage_level = t5.voltage_level 
-            AND ((t4.cdi IS NOT NULL AND t4.cdi = t5.cdi) OR (t4.cdi IS NULL AND t5.cdi IS NULL))
-        WHERE t1.id_service = {id_service} 
-            AND EXTRACT(YEAR FROM t1.record_timestamp) = {anio} 
-            AND EXTRACT(MONTH FROM t1.record_timestamp) = {mes}
-        """
-    cursor.execute(query_EE1)
-    value = cursor.fetchone()
-    ee1 = float(value[0])
-    return {"EE1": ee1}
-
-
